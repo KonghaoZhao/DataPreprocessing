@@ -1,0 +1,120 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.*;
+import java.io.IOException;
+
+public class Main
+{
+    // Compare two double values. Return ture if two values are the same.
+    public static boolean compareDouble(double a, double b)
+    {
+        return Math.abs(a - b) <= 0.001;
+    }
+
+
+    public static void printList(double[] list)
+    {
+        for (int i = 1; i < list.length; i++)
+        {
+            System.out.printf("%-9.2f ", list[i]);
+        }
+        System.out.println("");
+    }
+
+    public static void main(String[] args) throws IOException
+    {
+        //Capture starting point of the program
+        long startTime=System.currentTimeMillis();
+
+        /**
+         * Only change this block this new dataset
+         */
+        final int ROW = 2050; //Number of rows
+        final int COLUMN = 13; // Number of attributes including the Class labels
+        final String DATASET = "dataSet.txt"; // Dataset in local working directory
+
+        File inputFile = new File(DATASET);
+        FileInputStream inputStream = new FileInputStream(inputFile);
+        Scanner sc = new Scanner(inputFile);
+
+        // Input dataset
+        double[][] table = new double[ROW][COLUMN]; // Create a 2D array to store all entries of dataset
+        for(int i  = 0; i < ROW; i++)
+        {
+            for(int j = 0; j < COLUMN; j++)
+            {
+                table[i][j] = sc.nextDouble();
+            }
+        }
+
+        if (!sc.hasNext())
+        {
+            System.out.println("All data has been processed" + "\n");
+        }
+        inputStream.close();
+        // Input done
+
+
+        // Create a hashset to store the unique class label
+        Set<Double> list = new HashSet<Double>();
+
+        for(int i = 0; i < ROW;i++)
+        {
+            list.add(table[i][0]);
+        }
+
+        List<Double> athleteList = new ArrayList<Double>(list);
+        Collections.sort(athleteList);
+
+        // Arithmetic computation for each class
+        for (Double athlete : athleteList)
+        {
+            double[] min = new double[COLUMN];
+            double[] max = new double[COLUMN];
+            double[] avg = new double[COLUMN];
+            Arrays.fill(min, Double.MAX_VALUE);
+
+            for (int j = 0; j < ROW; j++)
+            {
+                for (int k = 0; k < COLUMN; k++)
+                {
+                    if (compareDouble(table[j][0], athlete))
+                    {
+                        avg[k] += table[j][k];
+                        if (table[j][k] > max[k])
+                        {
+                            max[k] = table[j][k];
+                        }
+
+                        if (table[j][k] < min[k])
+                        {
+                            min[k] = table[j][k];
+                        }
+                    }
+                }
+            }
+
+            // Data summary output for each class
+            System.out.printf("Class %.0f data summary:\n", athlete);
+
+            System.out.print("Min: ");
+            printList(min);
+            System.out.print("Max: ");
+            printList(max);
+
+            for(int i = 1; i < avg.length; i++)
+            {
+                avg[i] /= (avg[0]/athlete);
+            }
+            System.out.print("Avg: ");
+            printList(avg);
+
+            System.out.println();
+        }
+
+        long endTime=System.currentTimeMillis(); //capture ending time
+
+        System.out.println("Program run time: "+(endTime-startTime)+"ms");
+    }
+}
+
