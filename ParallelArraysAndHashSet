@@ -27,7 +27,7 @@ public class Main
         long startTime=System.currentTimeMillis();
 
         /**
-         * Only change this block this new dataset
+         * Only change this block with new dataset
          */
         final int ROW = 2050; //Number of rows
         final int COLUMN = 13; // Number of attributes including the Class labels
